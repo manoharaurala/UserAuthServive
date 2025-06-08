@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.ruby.userauthservive.exceptions.InvalidTokenException;
 import org.ruby.userauthservive.exceptions.PasswordMismatchException;
 import org.ruby.userauthservive.exceptions.UserAlreadyExistException;
 import org.ruby.userauthservive.exceptions.UserNotSignedException;
@@ -69,10 +70,22 @@ public class AuthService implements IAuthService {
     Token token = new Token();
     token.setUser(userOptional.get());
     token.setValue(RandomStringUtils.randomAlphanumeric(128));
+    token.setState(State.ACTIVE);
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.DAY_OF_MONTH, 30);
     Date dayAfterThirtyDays = calendar.getTime();
     token.setExpire_At(dayAfterThirtyDays);
     return tokenRepository.save(token);
+  }
+
+  @Override
+  public User validateToken(String tokenValue) {
+    Optional<Token> optionalToken =
+        tokenRepository.findActiveByValueAndNotExpired(tokenValue, new Date());
+    if (optionalToken.isEmpty()) {
+      // Token is not valid or expired
+      throw new InvalidTokenException("Invalid token");
+    }
+    return optionalToken.get().getUser();
   }
 }

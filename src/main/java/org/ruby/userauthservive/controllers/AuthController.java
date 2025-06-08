@@ -38,8 +38,11 @@ public class AuthController {
     return new ResponseEntity<>(token.getValue(), HttpStatus.OK);
   }
 
-  @GetMapping("/validate/{tokenValue}")
-  public void validateToken(@PathVariable String tokenValue) {}
+  @GetMapping("/validate/")
+  public UserDto validateToken(@RequestHeader("Authorization") String tokenValue) {
+    User user = authService.validateToken(tokenValue);
+    return from(user);
+  }
 
   private UserDto from(User user) {
     UserDto userDto = new UserDto();
