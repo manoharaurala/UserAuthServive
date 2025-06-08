@@ -1,8 +1,12 @@
 package org.ruby.userauthservive.repositories;
 
-import org.ruby.userauthservive.models.Role;
+import org.ruby.userauthservive.models.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {}
+public interface TokenRepository extends JpaRepository<Token, Long> {
+
+  @Override
+  public Token save(Token token);
+}
