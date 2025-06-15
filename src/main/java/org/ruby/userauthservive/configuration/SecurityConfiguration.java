@@ -7,17 +7,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfiguration {
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.authorizeHttpRequests(
-        (requests) -> {
-          try {
-            requests.anyRequest().permitAll().and().cors().disable().csrf().disable();
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
-        });
+    /*@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(
+                (requests) -> {
+                    try {
+                        requests.anyRequest().permitAll().and().cors().disable().csrf().disable();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
-    return httpSecurity.build();
-  }
+        return httpSecurity.build();
+    }*/
 }

@@ -12,4 +12,5 @@ public class UserDto {
   private String name;
   private String email;
   private List<String> roles = new ArrayList<>();
+
 }

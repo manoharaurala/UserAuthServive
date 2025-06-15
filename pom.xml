@@ -11,8 +11,8 @@
     <groupId>org.ruby</groupId>
     <artifactId>UserAuthServive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>UserAuthServive</name>
-    <description>UserAuthServive</description>
+    <name>UserAuthService</name>
+    <description>UserAuthService</description>
     <url/>
     <licenses>
         <license/>
@@ -61,6 +61,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
             <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
