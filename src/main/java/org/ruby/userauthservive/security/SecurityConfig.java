@@ -68,7 +68,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 // Redirect to the login page when not authenticated from the
                 // authorization endpoint
@@ -82,16 +82,16 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
-    @Order(1)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
-            throws Exception {
+    @Order(2)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> authorize
+                .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )
-                // Form login handles the redirect to the login page from the
-                // authorization server filter chain
+                .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable())
                 .formLogin(Customizer.withDefaults());
 
         return http.build();

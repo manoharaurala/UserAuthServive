@@ -3,7 +3,10 @@ package org.ruby.userauthservive.services;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.ruby.userauthservive.dtos.SendEmailDto;
 import org.ruby.userauthservive.exceptions.InvalidTokenException;
 import org.ruby.userauthservive.exceptions.PasswordMismatchException;
 import org.ruby.userauthservive.exceptions.UserAlreadyExistException;
@@ -13,6 +16,8 @@ import org.ruby.userauthservive.models.Token;
 import org.ruby.userauthservive.models.User;
 import org.ruby.userauthservive.repositories.TokenRepository;
 import org.ruby.userauthservive.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,10 @@ public class AuthService implements IAuthService {
   private final UserRepository userRepository;
   private final TokenRepository tokenRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  @Autowired
+  private KafkaTemplate <String, String> kafkaTemplate;
+
+  private ObjectMapper mapper = new ObjectMapper();
 
   public AuthService(
       UserRepository userRepository,
@@ -50,6 +59,21 @@ public class AuthService implements IAuthService {
     user.setCreatedBy(email);
     user.setState(State.ACTIVE);
     user = userRepository.save(user);
+    // Send a message to Kafka topic after user signup
+    SendEmailDto sendEmailDto = new SendEmailDto();
+    sendEmailDto.setSubject("Welcome to Our Ruby Service");
+    sendEmailDto.setBody("Hello " + user.getName() + ",\n\nThank you for signing up!");
+    sendEmailDto.setToEmail(user.getEmail());
+    String sendEmailDtoJson=null;
+    try {
+      sendEmailDtoJson = mapper.writeValueAsString(sendEmailDto);
+      kafkaTemplate.send("sendEmailEvent", sendEmailDtoJson);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    kafkaTemplate.send("sendEmailEvent",
+            sendEmailDtoJson);
     return user;
   }
 
