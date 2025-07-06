@@ -40,6 +40,7 @@ public class AuthController {
 
   @GetMapping("/validate/")
   public UserDto validateToken(@RequestHeader("Authorization") String tokenValue) {
+    System.out.println("Validating token: " + tokenValue);
     User user = authService.validateToken(tokenValue);
     return from(user);
   }
